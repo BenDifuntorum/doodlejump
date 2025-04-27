@@ -1,6 +1,6 @@
 from enum import Enum, auto
 from physics_engine.physics import PhysicsModel
-from physics_engine.physics_types import Ball
+from physics_engine.physics_types import Ball, Surface
 from objects import Platform, Quirk
 
 import random as r
@@ -61,9 +61,32 @@ class Model(PhysicsModel):
     
     def check_collision(self):
         for key, platform in enumerate(self._platform_list):
-            if ((self._ball.bottom >= platform.top >= self._ball.bottom - self._ball.v_y) or (self._ball.top >= platform.bottom >= self._ball.top + self._ball.v_y)) and platform.left < self._ball.x < platform.right:
+            if (((self._ball.bottom >= platform.top >= self._ball.bottom - self._ball.v_y) 
+                or (self._ball.top >= platform.bottom >= self._ball.top + self._ball.v_y)) 
+                and platform.left < self._ball.x < platform.right 
+                and self._ball.v_y > 0):
                 col_p = self._platform_list.pop(key)
                 return col_p
+
+    @property        
+    def closest_surface(self) -> Surface:
+        dist = self.ball_dist_from_next_surface
+        if self._platform_list
+        if dist == self._ball.left-0:
+            return Surface.LEFT
+
+        elif dist == self._width-self._ball.right:
+            return Surface.RIGHT
+
+        elif dist == self._ball.top-0:
+            return Surface.TOP
+
+        else:
+            assert dist == self._height-self._ball.bottom
+            return Surface.BOTTOM
+    
+    def platform_collision(self):
+        
 
     def quirk_release(self, quirk: Quirk):
         match quirk:
@@ -142,11 +165,8 @@ class Model(PhysicsModel):
         
 
     def manage_platform(self):
-        if not self._platform_list:
+        if len(self._platform_list) <= 5:
             self.new_platform()
-
-        elif len(self._platform_list) >= 5:
-            pass
         
         elif self._platform_list[-1].y >= 750:
             self.new_platform()
@@ -184,7 +204,6 @@ class Controller:
         self._model = model
         self._view = view
         
-
 
     def update(self):
         match self._model.game_state:

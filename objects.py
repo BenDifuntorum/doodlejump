@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum, auto
+from physics_engine.physics_types import SurfaceType
 import pyxel
 
 class Quirk(Enum):
@@ -44,8 +45,12 @@ class Platform(Rectangle):
         if quirk == Quirk.NULL:
             raise ValueError('Enter a proper quirk')
         
+        self.surface: SurfaceType = SurfaceType.TOP
+        
         self.v_x: float = v_x
         self.quirk: Quirk = quirk
+
+
 
 
 
